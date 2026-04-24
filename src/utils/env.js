@@ -1,4 +1,4 @@
-import { version as substoreVersion } from '../../package.json';
+import { version as substoreVersion } from '../../../Sub-Store/backend/package.json';
 import { ENV } from '@/vendor/open-api';
 
 const {

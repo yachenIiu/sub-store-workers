@@ -1,6 +1,7 @@
 /** Sub-Store Workers OpenAPI 适配层 */
 
 import { Base64 } from 'js-base64';
+import { installConsoleLogCapture } from '@/utils/debug-logs';
 
 // 平台检测
 const isQX = false;
@@ -95,6 +96,8 @@ export class OpenAPI {
             this.error(`Failed to load root from KV: ${e.message}`);
             this.root = {};
         }
+
+        installConsoleLogCapture(this);
     }
 
     // 同步初始化（空操作）

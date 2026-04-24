@@ -20,6 +20,7 @@ import registerSortingRoutes from '@/restful/sort';
 import registerMiscRoutes from '@/restful/miscs';
 import registerNodeInfoRoutes from '@/restful/node-info';
 import registerParserRoutes from '@/restful/parser';
+import registerLogRoutes from '@/restful/logs';
 
 import { produceArtifact } from '@/restful/sync';
 import { syncToGist } from '@/restful/artifacts';
@@ -45,6 +46,7 @@ registerSyncRoutes($app);
 registerNodeInfoRoutes($app);
 registerMiscRoutes($app);
 registerParserRoutes($app);
+registerLogRoutes($app);
 
 export default {
     // 定时同步
@@ -98,6 +100,10 @@ export default {
                     pathname = pathname.slice(backendPath.length);
                     const newUrl = new URL(request.url);
                     newUrl.pathname = pathname;
+                    // 注入 share 标记，让前端启用分享功能
+                    if (pathname.startsWith('/api/')) {
+                        newUrl.searchParams.set('share', 'true');
+                    }
                     request = new Request(newUrl.toString(), request);
                 }
             }
