@@ -161,7 +161,7 @@ jobs:
             sleep 10
             CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/")
             echo "Attempt $i: HTTP $CODE"
-            if [ "$CODE" = "200" ] || [ "$CODE" = "404" ]; then
+            if [ "$CODE" = "200" ] || [ "$CODE" = "302" ] || [ "$CODE" = "404" ]; then
               echo "Worker is alive"
               exit 0
             fi
