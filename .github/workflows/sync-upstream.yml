@@ -118,6 +118,8 @@ jobs:
           crons = ["55 15 * * *"]
 
           [vars]
+          SUB_STORE_BACKEND_CUSTOM_NAME = "Workers"
+          SUB_STORE_BACKEND_CUSTOM_ICON = "https://img.icons8.com/color/100/cloudflare.png"
           TOML
           sed -i 's/^          //' wrangler.toml
           sed -i "s/__KV_ID__/${{ secrets.KV_NAMESPACE_ID }}/" wrangler.toml
