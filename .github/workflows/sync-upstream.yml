@@ -72,19 +72,23 @@ jobs:
         if: steps.check.outputs.needed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: sub-store-workers/package-lock.json
+
+      - name: Install pnpm
+        if: steps.check.outputs.needed == 'true'
+        run: npm install -g pnpm
 
       - name: Install upstream deps
         if: steps.check.outputs.needed == 'true'
         working-directory: Sub-Store/backend
-        run: npm install --no-audit --no-fund
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run upstream tests
         if: steps.check.outputs.needed == 'true'
         working-directory: Sub-Store/backend
-        run: npm test
+        run: pnpm test
 
       - name: Install workers deps
         if: steps.check.outputs.needed == 'true'
@@ -100,7 +104,7 @@ jobs:
         if: steps.check.outputs.needed == 'true'
         working-directory: sub-store-workers
         run: |
-          cat > wrangler.toml <<EOF
+          cat > wrangler.toml <<'TOML'
           name = "sub-store-workers"
           main = "dist/worker.js"
           compatibility_date = "2024-09-23"
@@ -108,13 +112,17 @@ jobs:
 
           [[kv_namespaces]]
           binding = "SUB_STORE_DATA"
-          id = "${{ secrets.KV_NAMESPACE_ID }}"
+          id = "__KV_ID__"
 
           [triggers]
           crons = ["55 15 * * *"]
 
           [vars]
-          EOF
+          TOML
+          sed -i 's/^          //' wrangler.toml
+          sed -i "s/__KV_ID__/${{ secrets.KV_NAMESPACE_ID }}/" wrangler.toml
+          echo "Generated wrangler.toml:"
+          cat wrangler.toml
 
       - name: Deploy Workers
         if: steps.check.outputs.needed == 'true'
